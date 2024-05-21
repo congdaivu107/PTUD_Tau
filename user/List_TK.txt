@@ -1,0 +1,2 @@
+TK: NV00001		MK:1	 CV:QuanLy
+TK:	NV00002		MK:12  CV:NhanVien
