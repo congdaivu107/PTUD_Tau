@@ -420,29 +420,33 @@ public class ChuyenTau_DAO {
 	}
 	
 	public boolean delete(String maSP) {
-		ConnectDB.getInstance();
-		Connection con=(Connection) ConnectDB.getConnection();
-		PreparedStatement stmt=null;
-		int n=0;
-		try {
-			String str = "delete from SanPham where maSP = ?";
-			stmt=con.prepareStatement(str);
-			stmt.setString(1, maSP);
-			n=stmt.executeUpdate();
-		} catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				stmt.close();
-			} catch (SQLException e2) {
-				// TODO: handle exception
-				e2.printStackTrace();
-			}
-		}
-		return n>0;
+	    ConnectDB.getInstance();
+	    Connection con = (Connection) ConnectDB.getConnection();
+	    PreparedStatement stmt = null;
+	    int n = 0;
+	    try {
+	        String str = "delete from SanPham where maSP = ?";
+	        stmt = con.prepareStatement(str);
+	        stmt.setString(1, maSP);
+	        n = stmt.executeUpdate();
+	    } catch (SQLException e) {
+	        if (e.getSQLState().equals("23503")) { 
+	            System.out.println("Cannot delete the product because it is referenced by other records.");
+	        } else {
+	            e.printStackTrace();
+	        }
+	    } finally {
+	        try {
+	            if (stmt != null) {
+	                stmt.close();
+	            }
+	        } catch (SQLException e2) {
+	            e2.printStackTrace();
+	        }
+	    }
+	    return n > 0;
 	}
+
 	public boolean updateSL(ChuyenTau sp, ChiTietVe cthd) {
 		ConnectDB.getInstance();
 		Connection con=(Connection) ConnectDB.getConnection();

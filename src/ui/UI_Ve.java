@@ -926,7 +926,7 @@ public class UI_Ve extends JFrame implements ActionListener, MouseListener {
 					y += headerRectHeight;
 					g2d.drawString("Họ tên khách hàng:   "+txtTenKH.getText(), 12, y);
 					y += headerRectHeight;
-					g2d.drawString("Mã CT/Tên CT/SL/Giá                     ", 10, y);
+					g2d.drawString("Mã CT / Tên CT / SL / Giá                     ", 10, y);
 					y += yShift;
 					g2d.drawString("-------------------------------------", 10, y);
 					y += headerRectHeight;
@@ -959,7 +959,7 @@ public class UI_Ve extends JFrame implements ActionListener, MouseListener {
 					y += yShift;
 					g2d.drawString("*************************************", 10, y);
 					y += yShift;
-					g2d.drawString("       SOFTWARE BY:NHOM04         ", 10, y);
+					g2d.drawString("       SOFTWARE BY : NHOM 12         ", 10, y);
 					y += yShift;
 					g2d.drawString("   CONTACT: 0346829111       ", 10, y);
 					y += yShift;
@@ -1108,38 +1108,42 @@ public class UI_Ve extends JFrame implements ActionListener, MouseListener {
 
 			}
 		} else if (sou.equals(btnLuuHD)) {
-			if (KiemTraTTC()) {
-				KhachHang kh;
-				Ve hd;
-				kh = new KhachHang(txtTenKH.getText(), txtMaKH.getText(), txtDienThoai.getText(), txtDiaChi.getText());
-				hd = new Ve(txtMaHDBan.getText(), txtMaNV.getText(), txtMaKH.getText(),
-						Date.valueOf(txtNgayBan.getText()), TongTien);
-				if (kh_dao.getKhachHangTheoMa(txtMaKH.getText()) == null)
-					kh_dao.create(kh);
-				hd_dao.create(hd);
-				for (ChiTietVe cthd : dsSP) {
-					cthd_dao.create(cthd);
-					sp_dao.updateSL(sp_dao.getSanPhamTheoMa(cthd.getMaSP()), cthd);
-				}
-				JOptionPane.showMessageDialog(this, "Lưu vé thành công");
-				TienThoi = Double.valueOf(txtTienKhachDua.getText()) - TongTien;
-				lblTongTienThoi.setText(String.valueOf(formatter.format(TienThoi)));
-				TienKhachDua = Double.valueOf(txtTienKhachDua.getText());
-				txtTienKhachDua.setText(String.valueOf(formatter.format(TienKhachDua)));
-				int temp = JOptionPane.showConfirmDialog(this, "Bạn có muốn in vé ?", "Thông Báo",
-						JOptionPane.YES_NO_CANCEL_OPTION);
-				if (temp == JOptionPane.YES_OPTION) {
-					PrinterJob pj = PrinterJob.getPrinterJob();
-					pj.setPrintable(new BillPrintable(), getPageFormat(pj));
-					try {
-						pj.print();
-						kh_dao.create(kh);
-					} catch (PrinterException ex) {
-						ex.printStackTrace();
-					}
+		    if (KiemTraTTC()) {
+		        KhachHang kh;
+		        Ve hd;
+		        kh = new KhachHang(txtTenKH.getText(), txtMaKH.getText(), txtDienThoai.getText(), txtDiaChi.getText());
+		        hd = new Ve(txtMaHDBan.getText(), txtMaNV.getText(), txtMaKH.getText(), Date.valueOf(txtNgayBan.getText()), TongTien);
+		        
+		        if (kh_dao.getKhachHangTheoMa(txtMaKH.getText()) == null) {
+		            kh_dao.create(kh);
+		        }
+		        
+		        hd_dao.create(hd);
+		        
+		        for (ChiTietVe cthd : dsSP) {
+		            cthd_dao.create(cthd);
+		            sp_dao.updateSL(sp_dao.getSanPhamTheoMa(cthd.getMaSP()), cthd);
+		        }
+		        
+		        JOptionPane.showMessageDialog(this, "Lưu vé thành công");
+		        
+		        TienThoi = Double.valueOf(txtTienKhachDua.getText()) - TongTien;
+		        lblTongTienThoi.setText(String.valueOf(formatter.format(TienThoi)));
+		        TienKhachDua = Double.valueOf(txtTienKhachDua.getText());
+		        txtTienKhachDua.setText(String.valueOf(formatter.format(TienKhachDua)));
+		        
+		        int temp = JOptionPane.showConfirmDialog(this, "Bạn có muốn in vé ?", "Thông Báo", JOptionPane.YES_NO_CANCEL_OPTION);
+		        if (temp == JOptionPane.YES_OPTION) {
+		            PrinterJob pj = PrinterJob.getPrinterJob();
+		            pj.setPrintable(new BillPrintable(), getPageFormat(pj));
+		            try {
+		                pj.print();
+		            } catch (PrinterException ex) {
+		                ex.printStackTrace();
+		            }
+		        }
+		    }
 
-				}
-			}
 
 		} else if (sou.equals(btnXoaRongHD)) {
 		    try {

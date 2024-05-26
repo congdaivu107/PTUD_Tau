@@ -909,48 +909,51 @@ else {
 		});
 
 		btnSuaSanPham.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        if (txtGiaBan.getText().length() > 0 && txtGiaNhap.getText().length() > 0
+		                && txtSoLuong.getText().length() > 0 && txtDonVi.getText().length() > 0
+		                && txtTenSanPham.getText().length() > 0) {
+		            int row = tblSanPham.getSelectedRow();
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			    if (txtGiaBan.getText().length() > 0 && txtGiaNhap.getText().length() > 0
-			            && txtSoLuong.getText().length() > 0 && txtDonVi.getText().length() > 0
-			            && txtTenSanPham.getText().length() > 0) {
-			        int row = tblSanPham.getSelectedRow();
+		            // Kiểm tra nếu chỉ số row là hợp lệ
+		            if (row >= 0 && row < modelSanPham.getRowCount()) {
+		                String maSP = txtMaSanPham.getText();
+		                String tenSP = txtTenSanPham.getText();
+		                String donViSP = txtDonVi.getText();
+		                double giaNhap = Double.parseDouble(txtGiaNhap.getText());
+		                double giaBan = Double.parseDouble(txtGiaBan.getText());
+		                int tonKho = Integer.parseInt(txtSoLuong.getText());
+		                String tinhTrang = tonKho > 0 ? "con ve" : "het ve";
+		                String image = "tinh sao";
+		                NhaGa nhaCC = new NhaGa_DAO().getNhaCCTheoTenFirst(String.valueOf(cmbNhaCC.getSelectedItem()));
+		                Loai loai = new Loai_DAO().getLoaiTheoTenFirst(String.valueOf(cmbLoai.getSelectedItem()));
 
-			        // Kiểm tra nếu chỉ số row là hợp lệ
-			        if (row >= 0 && row < modelSanPham.getRowCount()) {
-			            String maSP = txtMaSanPham.getText();
-			            String tenSP = txtTenSanPham.getText();
-			            String donViSP = txtDonVi.getText();
-			            double giaNhap = Double.parseDouble(txtGiaNhap.getText());
-			            double giaBan = Double.parseDouble(txtGiaBan.getText());
-			            int tonKho = Integer.parseInt(txtSoLuong.getText());
-			            String tinhTrang = tonKho > 0 ? "con ve" : "het ve";
-			            String image = "tinh sao";
-			            NhaGa nhaCC = new NhaGa_DAO().getNhaCCTheoTenFirst(String.valueOf(cmbNhaCC.getSelectedItem()));
-			            Loai loai = new Loai_DAO().getLoaiTheoTenFirst(String.valueOf(cmbLoai.getSelectedItem()));
+		                ChuyenTau sanPham = new ChuyenTau(maSP, tenSP, donViSP, giaNhap, giaBan, tinhTrang, tonKho, image, nhaCC, loai);
 
-			            ChuyenTau sanPham = new ChuyenTau(maSP, tenSP, donViSP, giaNhap, giaBan, tinhTrang, tonKho, image, nhaCC, loai);
+		                System.out.println(new ChuyenTau_DAO().update(sanPham));
 
-			            System.out.println(new ChuyenTau_DAO().update(sanPham));
-
-			            modelSanPham.setValueAt(txtTenSanPham.getText(), row, 1);
-			            modelSanPham.setValueAt(txtDonVi.getText(), row, 2);
-			            modelSanPham.setValueAt(txtSoLuong.getText(), row, 3);
-			            modelSanPham.setValueAt(String.valueOf(cmbLoai.getSelectedItem()), row, 4);
-			            modelSanPham.setValueAt(String.valueOf(cmbNhaCC.getSelectedItem()), row, 5);
-			            modelSanPham.setValueAt(txtGiaNhap.getText(), row, 6);
-			            modelSanPham.setValueAt(txtGiaBan.getText(), row, 7);
-			        } else {
-			            lblException.setText("Error: Không có hàng nào được chọn hoặc chỉ số hàng không hợp lệ");
-			        }
-			    } else {
-			        lblException.setText("Error: Các ô nhập liệu không được để trống");
-			    }
-			}
-
-
+		                // Kiểm tra nếu modelSanPham có đủ cột trước khi cập nhật giá trị
+		                if (modelSanPham.getColumnCount() >= 8) {
+		                    modelSanPham.setValueAt(txtTenSanPham.getText(), row, 1);
+		                    modelSanPham.setValueAt(txtDonVi.getText(), row, 2);
+		                    modelSanPham.setValueAt(txtSoLuong.getText(), row, 3);
+		                    modelSanPham.setValueAt(String.valueOf(cmbLoai.getSelectedItem()), row, 4);
+		                    modelSanPham.setValueAt(String.valueOf(cmbNhaCC.getSelectedItem()), row, 5);
+		                    modelSanPham.setValueAt(txtGiaNhap.getText(), row, 6);
+		                    modelSanPham.setValueAt(txtGiaBan.getText(), row, 7);
+		                } else {
+		                    lblException.setText("Error: Số lượng cột trong modelSanPham không hợp lệ");
+		                }
+		            } else {
+		                lblException.setText("Error: Không có hàng nào được chọn hoặc chỉ số hàng không hợp lệ");
+		            }
+		        } else {
+		            lblException.setText("Error: Các ô nhập liệu không được để trống");
+		        }
+		    }
 		});
+
 
 		
 

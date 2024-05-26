@@ -104,31 +104,48 @@ public class KhachHang_DAO {
 	}
     
     public boolean create(KhachHang kh) {
-		ConnectDB.getInstance();
-		Connection con=(Connection) ConnectDB.getConnection();
-		PreparedStatement stmt=null;
-		int n=0;
-		try {
-			stmt=con.prepareStatement("insert into"+" KhachHang values(?, ?, ?, ?)");
-			stmt.setString(1, kh.getMaKH());
-			stmt.setString(2, kh.getTenKH());
-			stmt.setString(3, kh.getDiaChi());
-			stmt.setString(4, kh.getSdt());
-			
-			n=stmt.executeUpdate();
-		} catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				stmt.close();
-			} catch (SQLException e2) {
-				// TODO: handle exception
-				e2.printStackTrace();
-			}
-		}return n>0;
-	}
+        ConnectDB.getInstance();
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        int n = 0;
+
+        try {
+            String checkQuery = "SELECT COUNT(*) FROM KhachHang WHERE maKH = ?";
+            stmt = con.prepareStatement(checkQuery);
+            stmt.setString(1, kh.getMaKH());
+            rs = stmt.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
+
+            if (count > 0) {
+                System.out.println("Mã khách hàng đã tồn tại: " + kh.getMaKH());
+                return false;
+            }
+
+            stmt.close(); 
+
+            String insertQuery = "INSERT INTO KhachHang (maKH, tenKH, diaChi, sdt) VALUES (?, ?, ?, ?)";
+            stmt = con.prepareStatement(insertQuery);
+            stmt.setString(1, kh.getMaKH());
+            stmt.setString(2, kh.getTenKH());
+            stmt.setString(3, kh.getDiaChi());
+            stmt.setString(4, kh.getSdt());
+
+            n = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e2) {
+                e2.printStackTrace();
+            }
+        }
+        return n > 0;
+    }
+
     public boolean delete(String maKH) {
 		ConnectDB.getInstance();
 		Connection con=(Connection) ConnectDB.getConnection();
